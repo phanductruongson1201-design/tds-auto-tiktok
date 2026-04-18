@@ -821,44 +821,14 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
 <script>
 const BASE = 'https://traodoisub.com/api/';
 
-// ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
-const PROXIES = [
-  // Thay thế link Cloudflare của bạn vào dòng dưới này (nhớ giữ lại dấu /?${query})
-  url => { 
-    const query = url.split('?')[1]; 
-    return `https://empty-wind-5e89.phanductruongson1201.workers.dev/?${query}`; 
-  },
-  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-  url => `https://thingproxy.freeboard.io/fetch/${url}`,
-];
-let activeProxy = -1; // -1 = gọi thẳng, 0,1,2 = proxy index
-
 async function apiFetch(params) {
   const targetUrl = BASE + '?' + new URLSearchParams(params);
-  const startIdx = activeProxy;
-  for (let pi = startIdx; pi < PROXIES.length; pi++) {
-    try {
-      let res, data;
-      if (pi === -1) {
-        res  = await fetch(targetUrl);
-        data = await res.json();
-      } else {
-        const proxyUrl = PROXIES[pi](targetUrl);
-        res = await fetch(proxyUrl);
-        const raw = await res.json();
-        const text = raw?.contents ?? (typeof raw === 'string' ? raw : JSON.stringify(raw));
-        data = typeof text === 'string' ? JSON.parse(text) : raw;
-      }
-      if (pi !== activeProxy) {
-        activeProxy = pi;
-        const label = pi === -1 ? 'trực tiếp' : `proxy #${pi+1}`;
-        log(`🔗 Kết nối qua: ${label}`, 'info');
-      }
-      return data;
-    } catch(e) {
-      if (pi === PROXIES.length - 1) throw new Error('Tất cả proxy đều lỗi: ' + e.message);
-    }
+  try {
+    const res = await fetch(targetUrl);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch (e) {
+    throw new Error('Lỗi kết nối. Vui lòng bật Extension Allow CORS.');
   }
 }
 
