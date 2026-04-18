@@ -1,659 +1,855 @@
 <!DOCTYPE html>
-
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TDS Auto Tool – TikTok v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<title>TDS Auto Tool – TikTok</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --card: #16161f;
-    --border: #2a2a3a;
-    --accent: #fe2c55;
-    --accent2: #25f4ee;
-    --text: #e8e8f0;
-    --muted: #6b6b88;
-    --success: #00e676;
-    --warn: #ffc400;
-    --font-mono: 'Space Mono', monospace;
-    --font-display: 'Syne', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); min-height: 100vh; }
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 15% 15%, rgba(254,44,85,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 85% 85%, rgba(37,244,238,0.05) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-  }
-  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 28px 18px 60px; }
+:root {
+  --bg:        #f0f2f8;
+  --bg2:       #e8eaf4;
+  --white:     #ffffff;
+  --card:      #ffffff;
+  --border:    #e2e4f0;
+  --border2:   #d0d3e8;
 
-header { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
-.tiktok-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(–accent), #ff0050); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 20px rgba(254,44,85,0.35); }
-h1 { font-family: var(–font-display); font-size: 24px; font-weight: 800; line-height: 1.1; }
-h1 span { color: var(–accent2); }
-.badge { margin-left: auto; background: rgba(37,244,238,0.1); border: 1px solid rgba(37,244,238,0.25); color: var(–accent2); font-size: 11px; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
+  --pink:      #ff2d55;
+  --pink-lt:   #fff0f3;
+  --pink-mid:  #ffd6df;
+  --teal:      #00c8b8;
+  --teal-lt:   #e6faf8;
+  --teal-mid:  #b3ede9;
+  --amber:     #ff8c00;
+  --amber-lt:  #fff4e6;
+  --purple:    #7c3aed;
+  --purple-lt: #f3eeff;
+  --green:     #10b981;
+  --green-lt:  #e8faf4;
+  --blue:      #2563eb;
+  --blue-lt:   #eff4ff;
 
-.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
-.stat-box { background: var(–card); border: 1px solid var(–border); border-radius: 12px; padding: 14px; text-align: center; }
-.stat-box.hl-red { border-color: rgba(254,44,85,0.3); background: linear-gradient(135deg, rgba(254,44,85,0.08), var(–card)); }
-.stat-box.hl-cyan { border-color: rgba(37,244,238,0.3); background: linear-gradient(135deg, rgba(37,244,238,0.05), var(–card)); }
-.stat-val { font-family: var(–font-display); font-size: 22px; font-weight: 800; margin-bottom: 3px; }
-.stat-val.red { color: var(–accent); }
-.stat-val.cyan { color: var(–accent2); }
-.stat-val.green { color: var(–success); }
-.stat-val.warn { color: var(–warn); }
-.stat-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(–muted); }
+  --text:      #1a1b2e;
+  --text2:     #4a4b68;
+  --muted:     #9899b8;
 
-.card { background: var(–card); border: 1px solid var(–border); border-radius: 16px; padding: 22px; margin-bottom: 16px; position: relative; overflow: hidden; }
-.card::before { content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(254,44,85,0.35), transparent); }
-.card-title { font-family: var(–font-display); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(–muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-.dot { width: 6px; height: 6px; border-radius: 50%; background: var(–accent); box-shadow: 0 0 8px var(–accent); display: inline-block; }
+  --shadow-sm: 0 1px 3px rgba(30,35,80,0.07), 0 1px 2px rgba(30,35,80,0.05);
+  --shadow:    0 4px 16px rgba(30,35,80,0.09), 0 2px 4px rgba(30,35,80,0.06);
+  --shadow-lg: 0 12px 40px rgba(30,35,80,0.13), 0 4px 8px rgba(30,35,80,0.07);
 
+  --radius:    16px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+
+  --font:      'Plus Jakarta Sans', sans-serif;
+  --mono:      'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* Decorative background blobs */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 500px; height: 400px;
+  background: radial-gradient(circle, rgba(255,45,85,0.12), transparent 70%);
+  top: -100px; right: -100px;
+}
+body::after {
+  width: 400px; height: 350px;
+  background: radial-gradient(circle, rgba(0,200,184,0.1), transparent 70%);
+  bottom: -80px; left: -80px;
+}
+
+.container {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 28px;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.logo {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #ff2d55 0%, #ff6b8a 50%, #ff2d55 100%);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 6px 20px rgba(255,45,85,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.header-text h1 {
+  font-size: 20px; font-weight: 800;
+  background: linear-gradient(135deg, #ff2d55, #7c3aed);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+.header-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.header-badge {
+  margin-left: auto;
+  background: linear-gradient(135deg, var(--teal-lt), #d0faf6);
+  border: 1px solid var(--teal-mid);
+  color: #00897b;
+  font-size: 11px; font-weight: 700;
+  padding: 5px 12px; border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ── STAT BOXES ── */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; margin-bottom: 16px;
+}
+
+.stat-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 14px; text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-box:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.stat-box.s-pink  { background: linear-gradient(135deg, #fff5f7, #fff); border-color: var(--pink-mid); }
+.stat-box.s-green { background: linear-gradient(135deg, #f0fdf8, #fff); border-color: #a7f3d0; }
+.stat-box.s-red   { background: linear-gradient(135deg, #fff5f5, #fff); border-color: #fecaca; }
+.stat-box.s-teal  { background: linear-gradient(135deg, #f0fdfc, #fff); border-color: var(--teal-mid); }
+
+.stat-icon { font-size: 22px; margin-bottom: 6px; }
+.stat-val {
+  font-size: 26px; font-weight: 800; line-height: 1;
+  margin-bottom: 4px; font-family: var(--mono);
+}
+.stat-val.pink   { color: var(--pink); }
+.stat-val.green  { color: var(--green); }
+.stat-val.red    { color: #ef4444; }
+.stat-val.teal   { color: var(--teal); }
+.stat-label { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px; margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title .pill {
+  width: 20px; height: 4px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--pink), var(--teal));
+}
+
+/* ── INPUTS ── */
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .field { margin-bottom: 14px; }
-label { display: block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(–muted); margin-bottom: 7px; }
-input[type=text], input[type=number], input[type=password] {
-width: 100%; background: var(–surface); border: 1px solid var(–border); border-radius: 10px;
-padding: 11px 14px; color: var(–text); font-family: var(–font-mono); font-size: 13px; outline: none;
-transition: border-color 0.2s, box-shadow 0.2s;
-}
-input:focus { border-color: var(–accent2); box-shadow: 0 0 0 3px rgba(37,244,238,0.1); }
-input::placeholder { color: var(–muted); }
 
-/* Task type selector */
-.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-.type-btn {
-background: var(–surface); border: 2px solid var(–border); border-radius: 12px;
-padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; user-select: none;
+label.field-label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--text2); margin-bottom: 6px; letter-spacing: 0.3px;
 }
-.type-btn:hover { border-color: var(–muted); }
-.type-btn.selected-follow { border-color: #25f4ee; background: rgba(37,244,238,0.08); }
-.type-btn.selected-like { border-color: #fe2c55; background: rgba(254,44,85,0.08); }
-.type-btn.selected-view { border-color: #ffc400; background: rgba(255,196,0,0.08); }
-.type-btn.selected-comment { border-color: #b388ff; background: rgba(179,136,255,0.08); }
-.type-icon { font-size: 26px; margin-bottom: 6px; }
-.type-name { font-family: var(–font-display); font-size: 12px; font-weight: 700; }
-.type-name.cyan { color: var(–accent2); }
-.type-name.red { color: var(–accent); }
-.type-name.warn { color: var(–warn); }
-.type-name.purple { color: #b388ff; }
-.type-field { font-size: 10px; color: var(–muted); margin-top: 2px; letter-spacing: 0.5px; }
-.type-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(–border); margin: 6px auto 0; transition: all 0.2s; }
-.type-btn.selected-follow .type-check, .type-btn.selected-like .type-check,
-.type-btn.selected-view .type-check, .type-btn.selected-comment .type-check {
-background: currentColor; border-color: currentColor;
+
+input[type=text], input[type=number], input[type=password] {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
+input:focus {
+  border-color: var(--teal);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,200,184,0.15);
+}
+input::placeholder { color: var(--muted); font-family: var(--font); }
+
+/* ── BUTTONS ── */
+button {
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  border: none; border-radius: var(--radius-sm);
+  padding: 11px 18px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: all 0.18s; white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+/* Pink gradient – primary action */
+.btn-red {
+  background: linear-gradient(135deg, #ff2d55, #ff6b35);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255,45,85,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-red:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(255,45,85,0.45); }
+.btn-red:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,45,85,0.3); }
+
+/* Teal – secondary action */
+.btn-teal {
+  background: linear-gradient(135deg, #00c8b8, #00bcd4);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,200,184,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.btn-teal:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,200,184,0.4); }
+
+/* Purple */
+.btn-purple {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-purple:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(124,58,237,0.4); }
+
+/* Ghost */
+.btn-ghost {
+  background: var(--bg);
+  color: var(--text2);
+  border: 1.5px solid var(--border2);
+  box-shadow: var(--shadow-sm);
+}
+.btn-ghost:hover { background: var(--bg2); border-color: var(--muted); color: var(--text); }
+
+/* Stop – amber */
+.btn-amber {
+  background: linear-gradient(135deg, #ff8c00, #f59e0b);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255,140,0,0.3);
+}
+.btn-amber:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(255,140,0,0.4); }
 
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
-button { font-family: var(–font-mono); font-size: 12px; font-weight: 700; border: none; border-radius: 10px; padding: 11px 18px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
-.btn-primary { background: linear-gradient(135deg, var(–accent), #ff0050); color: #fff; box-shadow: 0 4px 20px rgba(254,44,85,0.3); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(254,44,85,0.45); }
-.btn-cyan { background: rgba(37,244,238,0.12); color: var(–accent2); border: 1px solid rgba(37,244,238,0.3); }
-.btn-cyan:hover { background: rgba(37,244,238,0.2); }
-.btn-ghost { background: rgba(255,255,255,0.05); color: var(–muted); border: 1px solid var(–border); }
-.btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(–text); }
-button:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+/* ── TYPE SELECTOR ── */
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
 
-/* Tab selector */
-.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tab { padding: 7px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(–muted); background: var(–surface); border: 1px solid var(–border); }
-.tab.active-follow { color: var(–accent2); border-color: rgba(37,244,238,0.4); background: rgba(37,244,238,0.08); }
-.tab.active-like { color: var(–accent); border-color: rgba(254,44,85,0.4); background: rgba(254,44,85,0.08); }
-.tab.active-view { color: var(–warn); border-color: rgba(255,196,0,0.4); background: rgba(255,196,0,0.08); }
-.tab.active-all { color: #fff; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+.type-btn {
+  border: 2px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 16px 12px; text-align: center;
+  cursor: pointer; background: var(--bg);
+  transition: all 0.2s; user-select: none;
+  position: relative; overflow: hidden;
+}
+.type-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.type-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.2s;
+  border-radius: calc(var(--radius) - 2px);
+}
 
-.task-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
-.task-list::-webkit-scrollbar { width: 3px; }
-.task-list::-webkit-scrollbar-thumb { background: var(–border); border-radius: 4px; }
-.task-item { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 11px 14px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.25s ease; }
-@keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
-.task-item.done { border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.03); }
-.task-item.running { border-color: rgba(37,244,238,0.4); background: rgba(37,244,238,0.03); }
-.task-item.failed { border-color: rgba(254,44,85,0.25); }
-.task-type-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
-.badge-follow { background: rgba(37,244,238,0.15); color: var(–accent2); }
-.badge-like { background: rgba(254,44,85,0.15); color: var(–accent); }
-.badge-view { background: rgba(255,196,0,0.15); color: var(–warn); }
-.badge-comment { background: rgba(179,136,255,0.15); color: #b388ff; }
-.task-info { flex: 1; min-width: 0; }
-.task-title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.task-id { font-size: 10px; color: var(–muted); margin-top: 2px; }
-.task-xu { font-family: var(–font-display); font-size: 14px; font-weight: 800; color: var(–warn); white-space: nowrap; }
-.task-status { font-size: 10px; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
-.status-wait { background: rgba(107,107,136,0.2); color: var(–muted); }
-.status-done { background: rgba(0,230,118,0.15); color: var(–success); }
-.status-run { background: rgba(37,244,238,0.15); color: var(–accent2); }
-.status-fail { background: rgba(254,44,85,0.15); color: var(–accent); }
+.type-btn.sel-follow { border-color: var(--teal); background: var(--teal-lt); box-shadow: 0 4px 16px rgba(0,200,184,0.18); }
+.type-btn.sel-like   { border-color: var(--pink); background: var(--pink-lt); box-shadow: 0 4px 16px rgba(255,45,85,0.15); }
+.type-btn.sel-view   { border-color: var(--amber); background: var(--amber-lt); box-shadow: 0 4px 16px rgba(255,140,0,0.15); }
 
-.spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.15); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.type-emoji { font-size: 30px; margin-bottom: 8px; }
+.type-name { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+.type-name.c-teal   { color: #007a70; }
+.type-name.c-pink   { color: var(--pink); }
+.type-name.c-amber  { color: #b35a00; }
+.type-field { font-size: 10px; color: var(--muted); font-family: var(--mono); }
 
-.progress-wrap { background: var(–surface); border-radius: 100px; height: 5px; overflow: hidden; margin-top: 12px; }
-.progress-bar { height: 100%; background: linear-gradient(90deg, var(–accent2), var(–accent)); border-radius: 100px; transition: width 0.4s ease; box-shadow: 0 0 6px rgba(37,244,238,0.4); }
+.type-check-ring {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border2);
+  margin: 8px auto 0; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: all 0.2s; color: transparent;
+}
+.sel-follow .type-check-ring { background: var(--teal); border-color: var(--teal); color: #fff; }
+.sel-like   .type-check-ring { background: var(--pink); border-color: var(--pink); color: #fff; }
+.sel-view   .type-check-ring { background: var(--amber); border-color: var(--amber); color: #fff; }
 
-.log-wrap { background: var(–surface); border: 1px solid var(–border); border-radius: 10px; padding: 14px; height: 200px; overflow-y: auto; font-size: 11px; line-height: 1.8; }
-.log-wrap::-webkit-scrollbar { width: 3px; }
-.log-wrap::-webkit-scrollbar-thumb { background: var(–border); border-radius: 4px; }
-.log-line { display: flex; gap: 10px; }
-.log-time { color: var(–muted); min-width: 50px; }
-.log-ok { color: var(–success); }
-.log-err { color: var(–accent); }
-.log-info { color: var(–accent2); }
-.log-warn { color: var(–warn); }
-.log-empty { color: var(–muted); font-style: italic; text-align: center; padding: 50px 0; }
+/* ── DELAY / TOGGLE ── */
+.settings-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px;
+}
+.setting-box {
+  background: var(--bg); border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.setting-icon { font-size: 18px; }
+.setting-info { flex: 1; }
+.setting-label { font-size: 11px; font-weight: 700; color: var(--text2); }
+.setting-sub   { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.setting-box input[type=number] { width: 64px; padding: 6px 10px; font-size: 13px; }
 
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.delay-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
-.delay-row label { margin: 0; white-space: nowrap; }
-.delay-row input { width: 70px; }
-.delay-note { font-size: 10px; color: var(–muted); }
-
-.toggle-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
-.toggle-label { font-size: 11px; color: var(–muted); }
-.toggle { width: 38px; height: 20px; background: var(–border); border-radius: 100px; position: relative; cursor: pointer; transition: background 0.2s; }
-.toggle.on { background: var(–accent2); }
-.toggle::after { content: ‘’; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: left 0.2s; }
+.toggle {
+  width: 42px; height: 24px; background: var(--border2);
+  border-radius: 100px; position: relative; cursor: pointer; transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle.on { background: linear-gradient(135deg, var(--teal), #00bcd4); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; background: #fff;
+  border-radius: 50%; top: 3px; left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
 .toggle.on::after { left: 21px; }
 
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(–muted); display: inline-block; margin-right: 5px; }
-.status-dot.active { background: var(–success); box-shadow: 0 0 7px var(–success); animation: pulse 1.5s infinite; }
-.status-dot.loading { background: var(–accent2); box-shadow: 0 0 7px var(–accent2); animation: pulse 0.8s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* ── TASK SECTION ── */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+}
 
-.empty-tasks { text-align: center; color: var(–muted); font-size: 12px; padding: 36px 0; }
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab {
+  padding: 7px 14px; border-radius: 30px;
+  font-size: 11px; font-weight: 700; cursor: pointer;
+  transition: all 0.18s; color: var(--muted);
+  background: var(--bg); border: 1.5px solid var(--border2);
+}
+.tab:hover { color: var(--text2); border-color: var(--muted); }
+.tab.act-all    { background: var(--text); color: #fff; border-color: var(--text); }
+.tab.act-follow { background: var(--teal-lt); color: #007a70; border-color: var(--teal); }
+.tab.act-like   { background: var(--pink-lt); color: var(--pink); border-color: var(--pink); }
+.tab.act-view   { background: var(--amber-lt); color: #b35a00; border-color: var(--amber); }
+
+/* Progress */
+.progress-wrap {
+  background: var(--bg2); border-radius: 100px;
+  height: 7px; overflow: hidden; margin-top: 12px;
+  border: 1px solid var(--border);
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--pink));
+  border-radius: 100px; transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(0,200,184,0.4);
+}
+
+/* Task items */
+.task-list {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 300px; overflow-y: auto; padding-right: 4px;
+}
+.task-list::-webkit-scrollbar { width: 4px; }
+.task-list::-webkit-scrollbar-track { background: var(--bg); border-radius: 4px; }
+.task-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.task-item {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.2s;
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+
+.task-item.done    { border-color: #a7f3d0; background: #f0fdf8; }
+.task-item.running { border-color: var(--teal-mid); background: var(--teal-lt); }
+.task-item.failed  { border-color: #fecaca; background: #fff5f5; }
+
+.tbadge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.tbadge-follow  { background: var(--teal-lt); color: #007a70; border: 1px solid var(--teal-mid); }
+.tbadge-like    { background: var(--pink-lt); color: var(--pink); border: 1px solid var(--pink-mid); }
+.tbadge-view    { background: var(--amber-lt); color: #b35a00; border: 1px solid #ffd8aa; }
+
+.task-info { flex: 1; min-width: 0; }
+.task-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.task-id    { font-size: 10px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+
+.task-xu { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--amber); white-space: nowrap; }
+
+.tstatus { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.tstatus-wait { background: var(--bg2); color: var(--muted); }
+.tstatus-run  { background: var(--teal-lt); color: #007a70; border: 1px solid var(--teal-mid); }
+.tstatus-done { background: #dcfce7; color: #15803d; }
+.tstatus-fail { background: #fee2e2; color: #dc2626; }
+
+.empty-tasks {
+  text-align: center; color: var(--muted); font-size: 13px;
+  padding: 40px 20px;
+  background: var(--bg); border-radius: var(--radius-sm);
+  border: 1.5px dashed var(--border2);
+}
+.empty-tasks .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+/* ── LOG ── */
+.log-wrap {
+  background: #1a1b2e; border-radius: var(--radius-sm);
+  padding: 14px; height: 200px; overflow-y: auto;
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.9;
+  border: 1px solid #2e3055;
+}
+.log-wrap::-webkit-scrollbar { width: 3px; }
+.log-wrap::-webkit-scrollbar-thumb { background: #3e3f6a; border-radius: 4px; }
+.log-line { display: flex; gap: 10px; }
+.log-time { color: #5c5f8a; min-width: 52px; }
+.log-ok   { color: #34d399; }
+.log-err  { color: #f87171; }
+.log-info { color: #67e8f9; }
+.log-warn { color: #fbbf24; }
+.log-empty { color: #5c5f8a; font-style: italic; text-align: center; padding: 60px 0; }
+
+/* ── STATUS DOT ── */
+.sdot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); display: inline-block; margin-right: 5px; }
+.sdot.active  { background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,0.6); animation: pulse 1.5s infinite; }
+.sdot.loading { background: var(--teal);  box-shadow: 0 0 8px rgba(0,200,184,0.6);  animation: pulse 0.8s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* Spinner */
+.spin {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: currentColor;
+  border-radius: 50%; animation: spin .7s linear infinite;
+  display: inline-block; flex-shrink: 0;
+}
+.spin-dark {
+  border-color: rgba(0,0,0,0.1);
+  border-top-color: var(--teal);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 600px) {
-.stats-bar { grid-template-columns: repeat(2, 1fr); }
-.type-grid { grid-template-columns: repeat(2, 1fr); }
-.row2 { grid-template-columns: 1fr; }
+  .stats-bar  { grid-template-columns: repeat(2,1fr); }
+  .type-grid  { grid-template-columns: repeat(2,1fr); }
+  .row2       { grid-template-columns: 1fr; }
+  .settings-row { grid-template-columns: 1fr; }
 }
 </style>
-
 </head>
 <body>
 <div class="container">
 
+  <!-- HEADER -->
   <header>
-    <div class="tiktok-icon">🎵</div>
-    <h1>TDS Auto<br><span>TikTok Tool</span> v2</h1>
-    <div class="badge">traodoisub.com</div>
+    <div class="logo">🎵</div>
+    <div class="header-text">
+      <h1>TDS Auto TikTok Tool</h1>
+      <p>traodoisub.com · Tự động kiếm xu</p>
+    </div>
+    <div class="header-badge">v2.0</div>
   </header>
 
-  <!-- Stats -->
-
+  <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-box hl-red">
-      <div class="stat-val red" id="xu-count">0</div>
-      <div class="stat-label">🪙 Tổng xu kiếm</div>
+    <div class="stat-box s-pink">
+      <div class="stat-icon">🪙</div>
+      <div class="stat-val pink" id="xu-count">0</div>
+      <div class="stat-label">Xu kiếm được</div>
     </div>
-    <div class="stat-box">
+    <div class="stat-box s-green">
+      <div class="stat-icon">✅</div>
       <div class="stat-val green" id="task-done">0</div>
-      <div class="stat-label">✅ Task xong</div>
+      <div class="stat-label">Task xong</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-val warn" id="task-fail">0</div>
-      <div class="stat-label">❌ Task lỗi</div>
+    <div class="stat-box s-red">
+      <div class="stat-icon">❌</div>
+      <div class="stat-val red" id="task-fail">0</div>
+      <div class="stat-label">Task lỗi</div>
     </div>
-    <div class="stat-box hl-cyan">
-      <div class="stat-val cyan" id="task-total">0</div>
-      <div class="stat-label">📋 Tổng task</div>
+    <div class="stat-box s-teal">
+      <div class="stat-icon">📋</div>
+      <div class="stat-val teal" id="task-total">0</div>
+      <div class="stat-label">Tổng task</div>
     </div>
   </div>
 
-  <!-- Config -->
-
+  <!-- CONFIG -->
   <div class="card">
-    <div class="card-title"><span class="dot"></span> Cấu Hình Tài Khoản</div>
+    <div class="card-title"><span class="pill"></span> Cấu Hình Tài Khoản</div>
     <div class="row2">
       <div class="field">
-        <label>TDS Token</label>
-        <input type="password" id="tds-token" placeholder="TDS_token từ CÀI ĐẶT..." />
+        <label class="field-label">🔑 TDS Token</label>
+        <input type="password" id="tds-token" placeholder="Dán TDS_token từ CÀI ĐẶT..."/>
       </div>
       <div class="field">
-        <label>TikTok ID (uid)</label>
-        <input type="text" id="tiktok-id" placeholder="ID TikTok của bạn..." />
+        <label class="field-label">🎵 TikTok ID (uid)</label>
+        <input type="text" id="tiktok-id" placeholder="ID TikTok của bạn..."/>
       </div>
     </div>
     <div class="btn-row">
-      <button class="btn-cyan" onclick="loadInfo()">
-        <span id="info-spinner"></span>📋 Kiểm tra acc & xu
+      <button class="btn-teal" onclick="loadInfo()">
+        <span id="info-sp"></span>📋 Kiểm tra acc & xu
       </button>
-      <button class="btn-cyan" onclick="setConfig()">⚙️ Đặt TikTok nick</button>
+      <button class="btn-purple" onclick="setConfig()">⚙️ Đặt TikTok nick</button>
+      <button class="btn-ghost" onclick="clearLog()">🗑️ Xóa log</button>
     </div>
   </div>
 
-  <!-- Task type selector -->
-
+  <!-- TASK TYPE -->
   <div class="card">
-    <div class="card-title"><span class="dot"></span> Chọn Loại Nhiệm Vụ</div>
+    <div class="card-title"><span class="pill"></span> Chọn Loại Nhiệm Vụ</div>
     <div class="type-grid">
-      <div class="type-btn selected-follow" id="btn-follow" onclick="toggleType('follow')">
-        <div class="type-icon">👤</div>
-        <div class="type-name cyan">Follow</div>
+      <div class="type-btn sel-follow" id="btn-follow" onclick="toggleType('follow')">
+        <div class="type-emoji">👤</div>
+        <div class="type-name c-teal">Follow</div>
         <div class="type-field">tiktok_follow</div>
-        <div class="type-check" style="color:var(--accent2)">✓</div>
+        <div class="type-check-ring">✓</div>
       </div>
-      <div class="type-btn selected-like" id="btn-like" onclick="toggleType('like')">
-        <div class="type-icon">❤️</div>
-        <div class="type-name red">Thả tim (Like)</div>
+      <div class="type-btn sel-like" id="btn-like" onclick="toggleType('like')">
+        <div class="type-emoji">❤️</div>
+        <div class="type-name c-pink">Thả Tim</div>
         <div class="type-field">tiktok_like</div>
-        <div class="type-check" style="color:var(--accent)">✓</div>
+        <div class="type-check-ring">✓</div>
       </div>
       <div class="type-btn" id="btn-view" onclick="toggleType('view')">
-        <div class="type-icon">👁️</div>
-        <div class="type-name warn">Xem video</div>
+        <div class="type-emoji">👁️</div>
+        <div class="type-name c-amber">Xem Video</div>
         <div class="type-field">tiktok_view</div>
-        <div class="type-check" style="color:var(--warn)"></div>
+        <div class="type-check-ring"></div>
       </div>
     </div>
 
-```
-<div class="delay-row">
-  <label>Delay:</label>
-  <input type="number" id="delay-time" value="4" min="1" max="60" />
-  <span class="delay-note">giây giữa mỗi task (nên ≥ 3s tránh bị block)</span>
-</div>
-
-<div class="toggle-row">
-  <span class="toggle-label">🔄 Tự tải task mới khi hết</span>
-  <div class="toggle on" id="auto-refetch-toggle" onclick="toggleRefetch()"></div>
-</div>
-```
-
+    <div class="settings-row">
+      <div class="setting-box">
+        <div class="setting-icon">⏱️</div>
+        <div class="setting-info">
+          <div class="setting-label">Delay giữa task</div>
+          <div class="setting-sub">Nên ≥ 3s tránh bị block</div>
+        </div>
+        <input type="number" id="delay-time" value="4" min="1" max="60"/>
+        <span style="font-size:11px;color:var(--muted);font-weight:600">giây</span>
+      </div>
+      <div class="setting-box" onclick="toggleRefetch()" style="cursor:pointer">
+        <div class="setting-icon">🔄</div>
+        <div class="setting-info">
+          <div class="setting-label">Tự tải task mới khi hết</div>
+          <div class="setting-sub">Chạy liên tục không ngừng</div>
+        </div>
+        <div class="toggle on" id="auto-refetch-toggle"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Tasks -->
-
+  <!-- TASK LIST -->
   <div class="card">
     <div class="section-head">
       <div class="card-title" style="margin-bottom:0">
-        <span class="dot"></span> Danh Sách Task
-        <span id="status-indicator" class="status-dot"></span>
+        <span class="pill"></span> Danh Sách Task
+        <span class="sdot" id="sdot"></span>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn-ghost" style="padding:8px 12px;font-size:11px" onclick="fetchAllSelectedTasks()">🔃 Tải tasks</button>
-        <button class="btn-primary" id="run-btn" onclick="startAuto()">▶ Chạy Auto</button>
-        <button class="btn-ghost" id="stop-btn" onclick="stopAuto()" style="display:none">⏹ Dừng</button>
+        <button class="btn-ghost" style="padding:9px 14px" onclick="fetchAllSelectedTasks()">🔃 Tải tasks</button>
+        <button class="btn-red" id="run-btn" onclick="startAuto()">▶ Chạy Auto</button>
+        <button class="btn-amber" id="stop-btn" onclick="stopAuto()" style="display:none">⏹ Dừng</button>
       </div>
     </div>
 
-```
-<!-- Type tabs -->
-<div class="tabs" id="type-tabs"></div>
+    <div class="tabs" id="type-tabs"></div>
 
-<div class="progress-wrap" id="progress-wrap" style="display:none">
-  <div class="progress-bar" id="progress-bar" style="width:0%"></div>
-</div>
+    <div class="progress-wrap" id="progress-wrap" style="display:none">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
 
-<div class="task-list" id="task-list">
-  <div class="empty-tasks">Chưa có task. Chọn loại nhiệm vụ → nhấn "Tải tasks".</div>
-</div>
-```
-
+    <div class="task-list" id="task-list" style="margin-top:12px">
+      <div class="empty-tasks">
+        <div class="empty-icon">📭</div>
+        Chưa có task.<br>Chọn loại nhiệm vụ rồi nhấn <b>Tải tasks</b>.
+      </div>
+    </div>
   </div>
 
-  <!-- Log -->
-
+  <!-- LOG -->
   <div class="card">
     <div class="section-head">
-      <div class="card-title" style="margin-bottom:0"><span class="dot"></span> Activity Log</div>
-      <button class="btn-ghost" style="padding:6px 12px;font-size:11px" onclick="clearLog()">🗑 Xóa</button>
+      <div class="card-title" style="margin-bottom:0"><span class="pill"></span> Activity Log</div>
     </div>
     <div class="log-wrap" id="log">
-      <div class="log-empty">Log trống...</div>
+      <div class="log-empty">Log trống. Bắt đầu dùng tool để xem nhật ký hoạt động.</div>
     </div>
   </div>
 
 </div>
 <script>
-  // ─── API Config ────────────────────────────────────────────
-  const BASE = 'https://traodoisub.com/api/';
-
-// Task types: field name on API + display info
+const BASE = 'https://traodoisub.com/api/';
 const TASK_TYPES = {
-follow: { label: ‘Follow’,      icon: ‘👤’, field: ‘tiktok_follow’,  color: ‘cyan’,   badgeClass: ‘badge-follow’   },
-like:   { label: ‘Thả tim’,     icon: ‘❤️’, field: ‘tiktok_like’,    color: ‘red’,    badgeClass: ‘badge-like’     },
-view:   { label: ‘Xem video’,   icon: ‘👁️’, field: ‘tiktok_view’,    color: ‘warn’,   badgeClass: ‘badge-view’     },
+  follow: { label:'Follow',    icon:'👤', field:'tiktok_follow', col:'follow' },
+  like:   { label:'Thả Tim',   icon:'❤️', field:'tiktok_like',   col:'like'   },
+  view:   { label:'Xem Video', icon:'👁️', field:'tiktok_view',   col:'view'   },
 };
 
-// ─── State ────────────────────────────────────────────────
-let selectedTypes = new Set([‘follow’, ‘like’]);
-let allTasks = [];       // { …apiData, _type, _status, _id_internal }
-let activeTab = ‘all’;
-let running = false;
-let stopFlag = false;
-let autoRefetch = true;
+let selectedTypes = new Set(['follow','like']);
+let allTasks = [];
+let activeTab = 'all';
+let running = false, stopFlag = false, autoRefetch = true;
 let totalXu = 0, doneCnt = 0, failCnt = 0;
 
-// ─── Helpers ──────────────────────────────────────────────
 const $ = id => document.getElementById(id);
-const getToken  = () => $(‘tds-token’).value.trim();
-const getTTId   = () => $(‘tiktok-id’).value.trim();
-const getDelay  = () => parseInt($(‘delay-time’).value) || 4;
-const sleep     = s  => new Promise(r => setTimeout(r, s * 1000));
+const getToken = () => $('tds-token').value.trim();
+const getTTId  = () => $('tiktok-id').value.trim();
+const getDelay = () => parseInt($('delay-time').value) || 4;
+const sleep    = s  => new Promise(r => setTimeout(r, s*1000));
 
 async function apiFetch(params) {
-const url = BASE + ‘?’ + new URLSearchParams(params);
-const res = await fetch(url);
-if (!res.ok) throw new Error(’HTTP ’ + res.status);
-return res.json();
+  const res = await fetch(BASE + '?' + new URLSearchParams(params));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
 }
 
-function now() {
-return new Date().toTimeString().slice(0, 8);
-}
+function tsNow() { return new Date().toTimeString().slice(0,8); }
 
-function log(msg, type = ‘info’) {
-const wrap = $(‘log’);
-const empty = wrap.querySelector(’.log-empty’);
-if (empty) empty.remove();
-const line = document.createElement(‘div’);
-line.className = ‘log-line’;
-line.innerHTML = `<span class="log-time">${now()}</span><span class="log-msg log-${type}">${msg}</span>`;
-wrap.appendChild(line);
-wrap.scrollTop = wrap.scrollHeight;
+function log(msg, type='info') {
+  const w = $('log');
+  const empty = w.querySelector('.log-empty');
+  if (empty) empty.remove();
+  const d = document.createElement('div');
+  d.className = 'log-line';
+  d.innerHTML = `<span class="log-time">${tsNow()}</span><span class="log-msg log-${type}">${msg}</span>`;
+  w.appendChild(d); w.scrollTop = w.scrollHeight;
 }
-
-function clearLog() {
-$(‘log’).innerHTML = ‘<div class="log-empty">Log trống…</div>’;
-}
+function clearLog() { $('log').innerHTML = '<div class="log-empty">Log trống.</div>'; }
 
 function updateStats() {
-$(‘xu-count’).textContent  = totalXu;
-$(‘task-done’).textContent = doneCnt;
-$(‘task-fail’).textContent = failCnt;
-$(‘task-total’).textContent = allTasks.length;
+  $('xu-count').textContent  = totalXu;
+  $('task-done').textContent = doneCnt;
+  $('task-fail').textContent = failCnt;
+  $('task-total').textContent = allTasks.length;
 }
+function setSdot(s) { $('sdot').className = 'sdot ' + (s||''); }
 
-function setIndicator(s) {
-$(‘status-indicator’).className = ’status-dot ’ + (s || ‘’);
-}
-
-// ─── Type toggles ─────────────────────────────────────────
 function toggleType(type) {
-const btn = $(‘btn-’ + type);
-if (selectedTypes.has(type)) {
-if (selectedTypes.size <= 1) return; // keep at least 1
-selectedTypes.delete(type);
-btn.className = ‘type-btn’;
-btn.querySelector(’.type-check’).textContent = ‘’;
-} else {
-selectedTypes.add(type);
-btn.className = ‘type-btn selected-’ + type;
-btn.querySelector(’.type-check’).textContent = ‘✓’;
+  const btn = $('btn-' + type);
+  if (selectedTypes.has(type)) {
+    if (selectedTypes.size <= 1) return;
+    selectedTypes.delete(type);
+    btn.className = 'type-btn';
+    btn.querySelector('.type-check-ring').textContent = '';
+  } else {
+    selectedTypes.add(type);
+    btn.className = 'type-btn sel-' + type;
+    btn.querySelector('.type-check-ring').textContent = '✓';
+  }
 }
-}
-
 function toggleRefetch() {
-autoRefetch = !autoRefetch;
-const el = $(‘auto-refetch-toggle’);
-el.classList.toggle(‘on’, autoRefetch);
+  autoRefetch = !autoRefetch;
+  $('auto-refetch-toggle').classList.toggle('on', autoRefetch);
 }
 
-// ─── Account info ─────────────────────────────────────────
 async function loadInfo() {
-const token = getToken();
-if (!token) { log(‘⚠ Chưa nhập TDS token!’, ‘warn’); return; }
-log(‘Đang kiểm tra tài khoản…’, ‘info’);
-$(‘info-spinner’).innerHTML = ‘<span class="spin" style="margin-right:6px"></span>’;
-try {
-const d = await apiFetch({ fields: ‘me’, access_token: token });
-$(‘info-spinner’).innerHTML = ‘’;
-if (d && d.id) {
-totalXu = parseInt(d.xu) || 0;
-updateStats();
-log(`✅ Acc: ${d.name || d.id} | Xu: ${d.xu} | TikTok ID: ${d.idtiktok || '—'}`, ‘ok’);
-} else {
-log(’❌ Token sai hoặc hết hạn: ’ + (d?.error || JSON.stringify(d)), ‘err’);
-}
-} catch (e) {
-$(‘info-spinner’).innerHTML = ‘’;
-log(’❌ Lỗi kết nối: ’ + e.message, ‘err’);
-}
+  const token = getToken();
+  if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
+  log('Đang kiểm tra tài khoản...','info');
+  $('info-sp').innerHTML = '<span class="spin spin-dark" style="border-top-color:#fff"></span>';
+  try {
+    const d = await apiFetch({ fields:'me', access_token:token });
+    $('info-sp').innerHTML = '';
+    if (d?.id) {
+      totalXu = parseInt(d.xu) || 0;
+      updateStats();
+      log(`✅ Tài khoản: ${d.name||d.id} | Xu: ${d.xu} | TikTok: ${d.idtiktok||'chưa đặt'}`, 'ok');
+    } else {
+      log('❌ Token sai / hết hạn: ' + (d?.error || JSON.stringify(d)), 'err');
+    }
+  } catch(e) {
+    $('info-sp').innerHTML = '';
+    log('❌ Lỗi kết nối: ' + e.message, 'err');
+  }
 }
 
 async function setConfig() {
-const token = getToken(), id = getTTId();
-if (!token || !id) { log(‘⚠ Nhập đủ token + TikTok ID!’, ‘warn’); return; }
-log(`Đặt TikTok ID: ${id}...`, ‘info’);
-try {
-const d = await apiFetch({ fields: ‘run’, id, access_token: token });
-if (d?.success || d?.status === ‘ok’) log(‘✅ Đặt nick thành công!’, ‘ok’);
-else log(’⚠ ’ + JSON.stringify(d).slice(0, 120), ‘warn’);
-} catch(e) { log(’❌ ’ + e.message, ‘err’); }
-}
-
-// ─── Fetch tasks ──────────────────────────────────────────
-async function fetchAllSelectedTasks() {
-const token = getToken();
-if (!token) { log(‘⚠ Chưa nhập TDS token!’, ‘warn’); return; }
-
-```
-allTasks = [];
-setIndicator('loading');
-log('🔃 Đang tải tasks: ' + [...selectedTypes].map(t => TASK_TYPES[t].label).join(', '), 'info');
-
-for (const type of selectedTypes) {
-  const info = TASK_TYPES[type];
+  const token = getToken(), id = getTTId();
+  if (!token||!id) { log('⚠ Nhập đủ token + TikTok ID!','warn'); return; }
+  log(`Đặt TikTok ID: ${id}...`,'info');
   try {
-    const d = await apiFetch({ fields: info.field, access_token: token });
-    if (d && Array.isArray(d.data)) {
-      const typed = d.data.map((t, i) => ({
-        ...t,
-        _type: type,
-        _status: 'wait',
-        _uid: type + '_' + (t.id || i)
-      }));
-      allTasks.push(...typed);
-      log(`  ↳ ${info.icon} ${info.label}: ${typed.length} task`, 'ok');
-    } else {
-      log(`  ↳ ${info.icon} ${info.label}: 0 task (${d?.error || 'trống'})`, 'warn');
-    }
-  } catch(e) {
-    log(`  ↳ ${info.icon} ${info.label}: lỗi – ${e.message}`, 'err');
+    const d = await apiFetch({ fields:'run', id, access_token:token });
+    if (d?.success||d?.status==='ok') log('✅ Đặt nick thành công!','ok');
+    else log('⚠ ' + JSON.stringify(d).slice(0,120),'warn');
+  } catch(e) { log('❌ '+e.message,'err'); }
+}
+
+async function fetchAllSelectedTasks() {
+  const token = getToken();
+  if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
+  allTasks = []; setSdot('loading');
+  log('🔃 Tải tasks: ' + [...selectedTypes].map(t=>TASK_TYPES[t].label).join(', '),'info');
+  for (const type of selectedTypes) {
+    const info = TASK_TYPES[type];
+    try {
+      const d = await apiFetch({ fields:info.field, access_token:token });
+      if (d && Array.isArray(d.data)) {
+        const typed = d.data.map((t,i)=>({...t, _type:type, _status:'wait', _uid:type+'_'+(t.id||i)}));
+        allTasks.push(...typed);
+        log(`  ↳ ${info.icon} ${info.label}: ${typed.length} task`,'ok');
+      } else {
+        log(`  ↳ ${info.icon} ${info.label}: 0 task (${d?.error||'trống'})`,'warn');
+      }
+    } catch(e) { log(`  ↳ ${info.icon} ${info.label}: lỗi – ${e.message}`,'err'); }
   }
+  updateStats(); renderTabs(); renderTasks();
+  setSdot(allTasks.length>0?'active':'');
+  $('progress-wrap').style.display = allTasks.length>0?'block':'none';
+  updateProgress();
+  log(`📋 Tổng ${allTasks.length} task đã tải.`,'info');
 }
 
-updateStats();
-renderTabs();
-renderTasks();
-setIndicator(allTasks.length > 0 ? 'active' : '');
-$('progress-wrap').style.display = allTasks.length > 0 ? 'block' : 'none';
-updateProgress();
-log(`📋 Tổng ${allTasks.length} task đã tải.`, 'info');
-```
-
-}
-
-// ─── Render tabs ──────────────────────────────────────────
 function renderTabs() {
-const wrap = $(‘type-tabs’);
-wrap.innerHTML = ‘’;
-const types = […new Set(allTasks.map(t => t._type))];
-if (types.length === 0) return;
-
-```
-const allBtn = document.createElement('div');
-allBtn.className = 'tab ' + (activeTab === 'all' ? 'active-all' : '');
-allBtn.textContent = `📋 Tất cả (${allTasks.length})`;
-allBtn.onclick = () => { activeTab = 'all'; renderTabs(); renderTasks(); };
-wrap.appendChild(allBtn);
-
-for (const type of types) {
-  const info = TASK_TYPES[type];
-  const cnt = allTasks.filter(t => t._type === type).length;
-  const btn = document.createElement('div');
-  btn.className = 'tab ' + (activeTab === type ? 'active-' + type : '');
-  btn.textContent = `${info.icon} ${info.label} (${cnt})`;
-  btn.onclick = () => { activeTab = type; renderTabs(); renderTasks(); };
-  wrap.appendChild(btn);
-}
-```
-
-}
-
-// ─── Render task list ─────────────────────────────────────
-function renderTasks() {
-const list = $(‘task-list’);
-const visible = activeTab === ‘all’ ? allTasks : allTasks.filter(t => t._type === activeTab);
-
-```
-if (visible.length === 0) {
-  list.innerHTML = '<div class="empty-tasks">Không có task nào.</div>';
-  return;
-}
-
-list.innerHTML = '';
-visible.forEach(t => {
-  const el = document.createElement('div');
-  el.id = 'task-el-' + t._uid;
-  el.className = 'task-item ' + (t._status === 'done' ? 'done' : t._status === 'running' ? 'running' : t._status === 'fail' ? 'failed' : '');
-  const info = TASK_TYPES[t._type];
-  el.innerHTML = `
-    <span class="task-type-badge badge-${t._type}">${info.icon} ${info.label}</span>
-    <div class="task-info">
-      <div class="task-title">${t.title || t.name || 'Task #' + t.id}</div>
-      <div class="task-id">ID: ${t.id || '—'}</div>
-    </div>
-    <div class="task-xu">+${t.xu || t.coins || 1} xu</div>
-    ${statusBadge(t._status)}
-  `;
-  list.appendChild(el);
-});
-```
-
+  const wrap = $('type-tabs'); wrap.innerHTML = '';
+  const types = [...new Set(allTasks.map(t=>t._type))];
+  if (!types.length) return;
+  const all = document.createElement('div');
+  all.className = 'tab ' + (activeTab==='all'?'act-all':'');
+  all.textContent = `📋 Tất cả (${allTasks.length})`;
+  all.onclick = ()=>{ activeTab='all'; renderTabs(); renderTasks(); };
+  wrap.appendChild(all);
+  for (const type of types) {
+    const info = TASK_TYPES[type];
+    const cnt = allTasks.filter(t=>t._type===type).length;
+    const btn = document.createElement('div');
+    btn.className = 'tab ' + (activeTab===type?'act-'+type:'');
+    btn.textContent = `${info.icon} ${info.label} (${cnt})`;
+    btn.onclick = ()=>{ activeTab=type; renderTabs(); renderTasks(); };
+    wrap.appendChild(btn);
+  }
 }
 
 function statusBadge(s) {
-const map = {
-wait:    `<span class="task-status status-wait">Chờ</span>`,
-running: `<span class="task-status status-run"><span class="spin" style="width:10px;height:10px;border-width:1.5px;display:inline-block;margin-right:4px;vertical-align:middle"></span>Đang làm</span>`,
-done:    `<span class="task-status status-done">✓ Xong</span>`,
-fail:    `<span class="task-status status-fail">✗ Lỗi</span>`,
-};
-return map[s] || map.wait;
+  return {
+    wait:    `<span class="tstatus tstatus-wait">Chờ</span>`,
+    running: `<span class="tstatus tstatus-run"><span class="spin" style="width:10px;height:10px;border-width:1.5px;border-top-color:#007a70;border-color:rgba(0,180,165,0.2);display:inline-block;vertical-align:middle;margin-right:4px"></span>Đang làm</span>`,
+    done:    `<span class="tstatus tstatus-done">✓ Xong</span>`,
+    fail:    `<span class="tstatus tstatus-fail">✗ Lỗi</span>`,
+  }[s] || `<span class="tstatus tstatus-wait">Chờ</span>`;
+}
+
+function renderTasks() {
+  const list = $('task-list');
+  const visible = activeTab==='all' ? allTasks : allTasks.filter(t=>t._type===activeTab);
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty-tasks"><div class="empty-icon">📭</div>Không có task nào.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  visible.forEach(t => {
+    const el = document.createElement('div');
+    el.id = 'tel-'+t._uid;
+    el.className = 'task-item ' + (t._status==='done'?'done':t._status==='running'?'running':t._status==='fail'?'failed':'');
+    const info = TASK_TYPES[t._type];
+    el.innerHTML = `
+      <span class="tbadge tbadge-${t._type}">${info.icon} ${info.label}</span>
+      <div class="task-info">
+        <div class="task-title">${t.title||t.name||'Task #'+t.id}</div>
+        <div class="task-id">ID: ${t.id||'—'}</div>
+      </div>
+      <div class="task-xu">+${t.xu||t.coins||1} xu</div>
+      ${statusBadge(t._status)}
+    `;
+    list.appendChild(el);
+  });
 }
 
 function setTaskStatus(uid, status) {
-const t = allTasks.find(x => x._uid === uid);
-if (!t) return;
-t._status = status;
-const el = $(‘task-el-’ + uid);
-if (!el) return;
-el.className = ‘task-item ’ + (status === ‘done’ ? ‘done’ : status === ‘running’ ? ‘running’ : status === ‘fail’ ? ‘failed’ : ‘’);
-const old = el.querySelector(’.task-status’);
-if (old) old.outerHTML = statusBadge(status);
-else el.insertAdjacentHTML(‘beforeend’, statusBadge(status));
+  const t = allTasks.find(x=>x._uid===uid); if(!t) return;
+  t._status = status;
+  const el = $('tel-'+uid); if(!el) return;
+  el.className = 'task-item '+(status==='done'?'done':status==='running'?'running':status==='fail'?'failed':'');
+  const old = el.querySelector('.tstatus');
+  if (old) old.outerHTML = statusBadge(status);
+  else el.insertAdjacentHTML('beforeend', statusBadge(status));
 }
 
 function updateProgress() {
-const done = allTasks.filter(t => t._status === ‘done’).length;
-const pct = allTasks.length > 0 ? (done / allTasks.length) * 100 : 0;
-$(‘progress-bar’).style.width = pct + ‘%’;
+  const done = allTasks.filter(t=>t._status==='done').length;
+  $('progress-bar').style.width = (allTasks.length>0 ? (done/allTasks.length)*100 : 0)+'%';
 }
 
-// ─── Run a single task ───────────────────────────────────
 async function runTask(t) {
-const token = getToken();
-setTaskStatus(t._uid, ‘running’);
-try {
-const d = await apiFetch({ fields: ‘run’, id: t.id, access_token: token });
-if (d && (d.success || d.status === ‘ok’ || d.xu_receive)) {
-setTaskStatus(t._uid, ‘done’);
-const gained = parseInt(d.xu_receive || t.xu || 1);
-totalXu += gained;
-doneCnt++;
-updateStats();
-updateProgress();
-log(`✅ [${TASK_TYPES[t._type].icon} ${TASK_TYPES[t._type].label}] "${(t.title||'').slice(0,30)}" → +${gained} xu`, ‘ok’);
-return true;
-} else {
-setTaskStatus(t._uid, ‘fail’);
-failCnt++;
-updateStats();
-updateProgress();
-log(`⚠ [${TASK_TYPES[t._type].label}] Task ${t.id} fail: ${d?.error || JSON.stringify(d).slice(0,60)}`, ‘warn’);
-return false;
-}
-} catch(e) {
-setTaskStatus(t._uid, ‘fail’);
-failCnt++;
-updateStats();
-updateProgress();
-log(`❌ Task ${t.id} lỗi: ${e.message}`, ‘err’);
-return false;
-}
-}
-
-// ─── Auto run ────────────────────────────────────────────
-async function startAuto() {
-const token = getToken();
-if (!token) { log(‘⚠ Chưa nhập TDS token!’, ‘warn’); return; }
-if (allTasks.length === 0) {
-await fetchAllSelectedTasks();
-if (allTasks.length === 0) { log(‘⚠ Không có task để chạy!’, ‘warn’); return; }
-}
-if (running) return;
-
-```
-running = true; stopFlag = false;
-$('run-btn').style.display = 'none';
-$('stop-btn').style.display = 'flex';
-setIndicator('loading');
-
-const pending = allTasks.filter(t => t._status === 'wait');
-log(`🚀 Bắt đầu auto – ${pending.length} task chờ (delay ${getDelay()}s)`, 'info');
-
-for (let i = 0; i < allTasks.length; i++) {
-  if (stopFlag) break;
-  const t = allTasks[i];
-  if (t._status !== 'wait') continue;
-
-  await runTask(t);
-  if (!stopFlag && i < allTasks.length - 1) await sleep(getDelay());
-}
-
-if (!stopFlag && autoRefetch) {
-  const remaining = allTasks.filter(t => t._status === 'wait').length;
-  if (remaining === 0) {
-    log('🔄 Hết task, đang tải task mới...', 'info');
-    await sleep(2);
-    doneCnt = 0; failCnt = 0;
-    await fetchAllSelectedTasks();
-    running = false;
-    if (allTasks.filter(t => t._status === 'wait').length > 0) {
-      await startAuto();
-      return;
+  const token = getToken();
+  setTaskStatus(t._uid, 'running');
+  try {
+    const d = await apiFetch({ fields:'run', id:t.id, access_token:token });
+    if (d && (d.success||d.status==='ok'||d.xu_receive)) {
+      setTaskStatus(t._uid, 'done');
+      const gained = parseInt(d.xu_receive||t.xu||1);
+      totalXu += gained; doneCnt++;
+      updateStats(); updateProgress();
+      log(`✅ [${TASK_TYPES[t._type].icon} ${TASK_TYPES[t._type].label}] "${(t.title||'').slice(0,30)}" → +${gained} xu`,'ok');
+      return true;
+    } else {
+      setTaskStatus(t._uid, 'fail');
+      failCnt++; updateStats(); updateProgress();
+      log(`⚠ [${TASK_TYPES[t._type].label}] Task ${t.id} fail: ${d?.error||JSON.stringify(d).slice(0,60)}`,'warn');
+      return false;
     }
+  } catch(e) {
+    setTaskStatus(t._uid, 'fail');
+    failCnt++; updateStats(); updateProgress();
+    log(`❌ Task ${t.id} lỗi: ${e.message}`,'err');
+    return false;
   }
 }
 
-if (!stopFlag) {
-  log(`🏁 Xong! Kiếm được ${totalXu} xu tổng, hoàn thành ${doneCnt} task.`, 'ok');
-} else {
-  log('⏹ Đã dừng.', 'warn');
-}
-
-running = false;
-setIndicator('active');
-$('run-btn').style.display = 'flex';
-$('stop-btn').style.display = 'none';
-```
-
+async function startAuto() {
+  const token = getToken();
+  if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
+  if (!allTasks.length) {
+    await fetchAllSelectedTasks();
+    if (!allTasks.length) { log('⚠ Không có task để chạy!','warn'); return; }
+  }
+  if (running) return;
+  running=true; stopFlag=false;
+  $('run-btn').style.display='none';
+  $('stop-btn').style.display='flex';
+  setSdot('loading');
+  const pending = allTasks.filter(t=>t._status==='wait');
+  log(`🚀 Bắt đầu auto – ${pending.length} task đang chờ (delay ${getDelay()}s)`,'info');
+  for (let i=0; i<allTasks.length; i++) {
+    if (stopFlag) break;
+    if (allTasks[i]._status!=='wait') continue;
+    await runTask(allTasks[i]);
+    if (!stopFlag && i<allTasks.length-1) await sleep(getDelay());
+  }
+  if (!stopFlag && autoRefetch) {
+    if (!allTasks.filter(t=>t._status==='wait').length) {
+      log('🔄 Hết task, đang tải task mới...','info');
+      await sleep(2); doneCnt=0; failCnt=0;
+      await fetchAllSelectedTasks();
+      running=false;
+      if (allTasks.filter(t=>t._status==='wait').length>0) { await startAuto(); return; }
+    }
+  }
+  if (!stopFlag) log(`🏁 Hoàn thành! Tổng xu: ${totalXu} | Task xong: ${doneCnt}`,'ok');
+  else log('⏹ Đã dừng.','warn');
+  running=false; setSdot('active');
+  $('run-btn').style.display='flex';
+  $('stop-btn').style.display='none';
 }
 
 function stopAuto() {
-stopFlag = true;
-log(‘⏹ Đang dừng sau task hiện tại…’, ‘warn’);
+  stopFlag=true;
+  log('⏹ Đang dừng sau task hiện tại...','warn');
 }
 </script>
-
 </body>
 </html>
