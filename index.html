@@ -822,14 +822,12 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
 const BASE = 'https://traodoisub.com/api/';
 
 // ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
-// ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
 const PROXIES = [
-  // 1. Proxy cá nhân của bạn (Ưu tiên cao nhất, chống block)
+  // Thay thế link Cloudflare của bạn vào dòng dưới này (nhớ giữ lại dấu /?${query})
   url => { 
     const query = url.split('?')[1]; 
     return `https://empty-wind-5e89.phanductruongson1201.workers.dev/?${query}`; 
   },
-  // 2. Các proxy dự phòng
   url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
   url => `https://thingproxy.freeboard.io/fetch/${url}`,
@@ -838,25 +836,20 @@ let activeProxy = -1; // -1 = gọi thẳng, 0,1,2 = proxy index
 
 async function apiFetch(params) {
   const targetUrl = BASE + '?' + new URLSearchParams(params);
-
-  // Thử từ activeProxy hiện tại, nếu lỗi thì leo thang lên proxy tiếp
   const startIdx = activeProxy;
   for (let pi = startIdx; pi < PROXIES.length; pi++) {
     try {
       let res, data;
       if (pi === -1) {
-        // Gọi thẳng (không proxy)
         res  = await fetch(targetUrl);
         data = await res.json();
       } else {
         const proxyUrl = PROXIES[pi](targetUrl);
         res = await fetch(proxyUrl);
         const raw = await res.json();
-        // allorigins trả về { contents: "..." }
         const text = raw?.contents ?? (typeof raw === 'string' ? raw : JSON.stringify(raw));
         data = typeof text === 'string' ? JSON.parse(text) : raw;
       }
-      // Thành công — ghi nhớ proxy đang dùng
       if (pi !== activeProxy) {
         activeProxy = pi;
         const label = pi === -1 ? 'trực tiếp' : `proxy #${pi+1}`;
@@ -864,7 +857,6 @@ async function apiFetch(params) {
       }
       return data;
     } catch(e) {
-      // Thử proxy tiếp
       if (pi === PROXIES.length - 1) throw new Error('Tất cả proxy đều lỗi: ' + e.message);
     }
   }
@@ -883,8 +875,7 @@ let running = false, stopFlag = false, autoRefetch = true;
 let totalXu = 0, doneCnt = 0, failCnt = 0;
 let accXu = null;
 
-// ── Multi-account state ──
-let tiktokAccounts = []; // [{ id, jobsDone, status:'waiting'|'active'|'done' }]
+let tiktokAccounts = []; 
 let currentAccIdx  = 0;
 let jobsThisAcc    = 0;
 const getJobsPerAcc = () => parseInt($('jobs-per-acc').value) || 100;
@@ -894,12 +885,6 @@ const getToken = () => $('tds-token').value.trim();
 const getTTId  = () => $('tiktok-id').value.trim();
 const getDelay = () => parseInt($('delay-time').value) || 4;
 const sleep    = s  => new Promise(r => setTimeout(r, s*1000));
-
-async function apiFetch(params) {
-  const res = await fetch(BASE + '?' + new URLSearchParams(params));
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
-}
 
 function tsNow() { return new Date().toTimeString().slice(0,8); }
 
@@ -926,7 +911,7 @@ function updateXuBanner(xu, name) {
   const el = $('xu-hientai');
   el.textContent = Number(xu).toLocaleString('vi-VN');
   el.classList.remove('bump');
-  void el.offsetWidth; // reflow để trigger animation
+  void el.offsetWidth; 
   el.classList.add('bump');
   if (name) $('xu-accname').textContent = '👤 ' + name;
   accXu = parseInt(xu);
@@ -951,7 +936,6 @@ function toggleRefetch() {
   $('auto-refetch-toggle').classList.toggle('on', autoRefetch);
 }
 
-// ── Multi-account functions ──────────────────────────────
 function loadAccounts() {
   const raw = $('acc-list-input').value.trim();
   if (!raw) { log('⚠ Danh sách TikTok ID trống!','warn'); return; }
@@ -1022,7 +1006,6 @@ function updateAccItem(idx) {
 }
 
 async function switchToNextAccount() {
-  // Mark current done
   if (tiktokAccounts[currentAccIdx]) {
     tiktokAccounts[currentAccIdx].status = 'done';
     updateAccItem(currentAccIdx);
@@ -1036,37 +1019,28 @@ async function switchToNextAccount() {
   next.status = 'active'; jobsThisAcc = 0;
   updateAccItem(currentAccIdx);
 
-  // Show switch banner
   const banner = $('acc-switch-banner');
   $('acc-switch-text').textContent = `Đang chuyển → Acc #${currentAccIdx+1}: ${next.id}`;
   banner.classList.add('show');
   log(`🔄 Chuyển sang acc #${currentAccIdx+1}: ${next.id}`, 'info');
 
-  // Call API to set new TikTok nick
- async function loadInfo() {
   const token = getToken();
-  if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
-  log('Đang kiểm tra tài khoản...','info');
-  $('info-sp').innerHTML = '<span class="spin spin-dark" style="border-top-color:#fff"></span>';
-  $('refresh-sp').innerHTML = '<span class="spin" style="width:12px;height:12px;border-width:2px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></span>';
   try {
-    const d = await apiFetch({ fields:'me', access_token:token });
-    $('info-sp').innerHTML = '';
-    $('refresh-sp').innerHTML = '';
-    if (d?.id) {
-      accXu = parseInt(d.xu) || 0;
-      updateXuBanner(d.xu, d.name || d.id);
-      updateStats();
-      log(`✅ Tài khoản: ${d.name||d.id} | Xu hiện tại: ${Number(d.xu).toLocaleString('vi-VN')} | TikTok: ${d.idtiktok||'chưa đặt'}`, 'ok');
+    const d = await apiFetch({ fields:'run', id: next.id, access_token: token });
+    if (d?.success||d?.status==='ok') {
+      log(`✅ Đã đặt TikTok nick: ${next.id}`, 'ok');
     } else {
-      log('❌ Token sai / hết hạn: ' + (d?.error || JSON.stringify(d)), 'err');
+      log(`⚠ Đặt nick ${next.id} lạ: ${JSON.stringify(d).slice(0,80)}`, 'warn');
     }
   } catch(e) {
-    $('info-sp').innerHTML = '';
-    $('refresh-sp').innerHTML = '';
-    log('❌ Lỗi kết nối: ' + e.message, 'err');
+    log(`❌ Lỗi đặt nick ${next.id}: ${e.message}`, 'err');
   }
+
+  await sleep(2);
+  banner.classList.remove('show');
+  return true;
 }
+
 async function testProxy() {
   const token = getToken();
   if (!token) { log('⚠ Nhập TDS token trước để test!','warn'); return; }
@@ -1078,7 +1052,7 @@ async function testProxy() {
   $('proxy-badge').textContent = 'Đang test';
   $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fef9c3;color:#854d0e';
 
-  const proxyNames = ['Trực tiếp', 'corsproxy.io', 'allorigins.win', 'thingproxy'];
+  const proxyNames = ['Trực tiếp', 'Cloudflare Proxy', 'corsproxy.io', 'allorigins.win', 'thingproxy'];
   activeProxy = -1;
 
   for (let pi = -1; pi < PROXIES.length; pi++) {
@@ -1105,7 +1079,6 @@ async function testProxy() {
         $('proxy-badge').textContent = '✓ OK';
         $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#dcfce7;color:#15803d';
         log(`✅ Kết nối OK qua ${name}! Xu: ${data.xu}`, 'ok');
-        // auto load info
         accXu = parseInt(data.xu) || 0;
         updateXuBanner(data.xu, data.name || data.id);
         updateStats();
@@ -1115,7 +1088,6 @@ async function testProxy() {
       log(`❌ ${name} thất bại: ${e.message}`, 'warn');
     }
   }
-  // Tất cả đều lỗi
   $('proxy-icon').textContent  = '❌';
   $('proxy-label').textContent = 'Không thể kết nối qua bất kỳ proxy nào';
   $('proxy-sub').textContent   = 'Hãy cài extension CORS Unblock hoặc dùng Live Server';
@@ -1123,6 +1095,9 @@ async function testProxy() {
   $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#dc2626';
   log('❌ Tất cả proxy đều lỗi. Cài extension CORS Unblock để dùng.', 'err');
 }
+
+// ĐÂY LÀ HÀM loadInfo() ĐÃ ĐƯỢC VÁ LỖI CÚ PHÁP
+async function loadInfo() {
   const token = getToken();
   if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
   log('Đang kiểm tra tài khoản...','info');
@@ -1266,7 +1241,6 @@ async function runTask(t) {
       updateStats(); updateProgress();
       log(`✅ [${TASK_TYPES[t._type].icon} ${TASK_TYPES[t._type].label}] "${(t.title||'').slice(0,30)}" → +${gained} xu`,'ok');
 
-      // ── Multi-account: đếm job và kiểm tra đổi acc ──
       if (tiktokAccounts.length > 0) {
         jobsThisAcc++;
         if (tiktokAccounts[currentAccIdx]) {
@@ -1277,7 +1251,7 @@ async function runTask(t) {
         if (jobsThisAcc >= lim) {
           log(`📊 Acc #${currentAccIdx+1} đã đủ ${lim} job!`, 'warn');
           const switched = await switchToNextAccount();
-          if (!switched) { stopFlag = true; } // hết acc thì dừng
+          if (!switched) { stopFlag = true; } 
         }
       }
       return true;
@@ -1308,7 +1282,6 @@ async function startAuto() {
   $('stop-btn').style.display='flex';
   setSdot('loading');
 
-  // Kích hoạt acc đầu tiên nếu có danh sách
   if (tiktokAccounts.length > 0) {
     currentAccIdx = 0; jobsThisAcc = 0;
     tiktokAccounts.forEach((a,i) => { a.status = i===0?'active':'waiting'; a.jobsDone = 0; });
