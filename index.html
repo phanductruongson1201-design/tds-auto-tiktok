@@ -613,13 +613,13 @@ const getDelay = () => parseInt($('delay-time').value) || 4;
 const sleep    = s  => new Promise(r => setTimeout(r, s*1000));
 
 async function apiFetch(params) {
-  // 1. Tạo đường link API gốc của TDS
+  // 1. Link API gốc của web Traodoisub
   const targetUrl = 'https://traodoisub.com/api/?' + new URLSearchParams(params);
-  
-  // 2. Bọc nó qua một trạm Proxy để lách luật CORS
-  const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(targetUrl);
-  
-  // 3. Gửi request qua Proxy
+
+  // 2. Nối qua trạm proxy của allorigins
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+
+  // 3. Gửi request để lấy dữ liệu
   const res = await fetch(proxyUrl);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
