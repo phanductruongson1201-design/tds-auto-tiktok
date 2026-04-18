@@ -822,7 +822,14 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
 const BASE = 'https://traodoisub.com/api/';
 
 // ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
+// ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
 const PROXIES = [
+  // 1. Proxy cá nhân của bạn (Ưu tiên cao nhất, chống block)
+  url => { 
+    const query = url.split('?')[1]; 
+    return `https://empty-wind-5e89.phanductruongson1201.workers.dev/?${query}`; 
+  },
+  // 2. Các proxy dự phòng
   url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
   url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
   url => `https://thingproxy.freeboard.io/fetch/${url}`,
