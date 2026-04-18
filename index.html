@@ -33,6 +33,10 @@
   --text2:     #4a4b68;
   --muted:     #9899b8;
 
+  --gold:      #f59e0b;
+  --gold-lt:   #fffbeb;
+  --gold-mid:  #fde68a;
+
   --shadow-sm: 0 1px 3px rgba(30,35,80,0.07), 0 1px 2px rgba(30,35,80,0.05);
   --shadow:    0 4px 16px rgba(30,35,80,0.09), 0 2px 4px rgba(30,35,80,0.06);
   --shadow-lg: 0 12px 40px rgba(30,35,80,0.13), 0 4px 8px rgba(30,35,80,0.07);
@@ -441,11 +445,174 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── XU BANNER ── */
+.xu-banner {
+  background: linear-gradient(135deg, #ff8c00 0%, #f59e0b 50%, #fbbf24 100%);
+  border-radius: var(--radius);
+  padding: 20px 26px;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 18px;
+  box-shadow: 0 8px 28px rgba(245,158,11,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  position: relative; overflow: hidden;
+}
+.xu-banner::before {
+  content: '🪙';
+  position: absolute; right: -10px; top: -10px;
+  font-size: 90px; opacity: 0.12; pointer-events: none;
+  transform: rotate(-10deg);
+}
+.xu-banner-icon {
+  width: 54px; height: 54px; flex-shrink: 0;
+  background: rgba(255,255,255,0.25);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 2px 8px rgba(0,0,0,0.1);
+}
+.xu-banner-info { flex: 1; }
+.xu-banner-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 4px;
+}
+.xu-banner-val {
+  font-family: var(--mono); font-size: 38px; font-weight: 700;
+  color: #fff; line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: all 0.4s;
+}
+.xu-banner-val.bump {
+  animation: xuBump 0.4s ease;
+}
+@keyframes xuBump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); color: #fff; }
+  100% { transform: scale(1); }
+}
+.xu-banner-sub {
+  font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px;
+}
+.xu-banner-right { text-align: right; }
+.xu-banner-earned-label { font-size: 10px; color: rgba(255,255,255,0.65); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.xu-banner-earned { font-family: var(--mono); font-size: 22px; font-weight: 700; color: #fff; margin-top: 2px; }
+.xu-banner-btn {
+  background: rgba(255,255,255,0.22);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff; font-family: var(--font); font-size: 12px; font-weight: 700;
+  padding: 8px 16px; border-radius: 30px; cursor: pointer;
+  margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s; white-space: nowrap;
+}
+.xu-banner-btn:hover { background: rgba(255,255,255,0.32); transform: translateY(-1px); }
+
+/* ── MULTI ACCOUNT ── */
+.acc-manager { margin-bottom: 14px; }
+
+.acc-input-area {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.8;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.acc-input-area:focus {
+  border-color: var(--teal);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,200,184,0.15);
+}
+.acc-input-area::placeholder { color: var(--muted); font-family: var(--font); }
+
+.acc-jobs-row {
+  display: flex; align-items: center; gap: 12px; margin-top: 12px;
+}
+.acc-jobs-row label { font-size: 11px; font-weight: 700; color: var(--text2); white-space: nowrap; }
+.acc-jobs-row input { width: 70px; }
+.acc-jobs-note { font-size: 11px; color: var(--muted); flex: 1; }
+
+/* Account list */
+.acc-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; max-height: 260px; overflow-y: auto; padding-right: 4px; }
+.acc-list::-webkit-scrollbar { width: 3px; }
+.acc-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.acc-item {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.2s;
+  animation: slideIn 0.2s ease;
+}
+.acc-item.acc-active {
+  border-color: var(--teal);
+  background: var(--teal-lt);
+  box-shadow: 0 2px 12px rgba(0,200,184,0.15);
+}
+.acc-item.acc-done {
+  border-color: #a7f3d0;
+  background: #f0fdf8;
+}
+.acc-item.acc-waiting { opacity: 0.6; }
+
+.acc-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; font-weight: 800;
+  font-family: var(--mono);
+}
+.acc-active .acc-avatar { background: var(--teal); color: #fff; box-shadow: 0 2px 8px rgba(0,200,184,0.4); }
+.acc-done   .acc-avatar { background: #a7f3d0; color: #065f46; }
+.acc-waiting .acc-avatar { background: var(--bg2); color: var(--muted); border: 1.5px solid var(--border2); }
+
+.acc-info { flex: 1; min-width: 0; }
+.acc-id { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+.acc-prog-wrap {
+  flex-shrink: 0; text-align: right; min-width: 90px;
+}
+.acc-prog-bar-bg {
+  background: var(--border2); border-radius: 100px; height: 5px; overflow: hidden; margin-bottom: 4px;
+}
+.acc-prog-bar {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--teal), #00bcd4);
+  transition: width 0.4s ease;
+}
+.acc-done .acc-prog-bar { background: linear-gradient(90deg, var(--green), #34d399); }
+.acc-prog-text { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text2); }
+
+.acc-status-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.asb-active  { background: var(--teal-lt); color: #007a70; border: 1px solid var(--teal-mid); }
+.asb-done    { background: #dcfce7; color: #15803d; }
+.asb-waiting { background: var(--bg2); color: var(--muted); }
+
+.acc-switch-banner {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff; border-radius: var(--radius-sm);
+  padding: 12px 16px; margin-top: 12px;
+  display: none; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+  animation: slideIn 0.3s ease;
+}
+.acc-switch-banner.show { display: flex; }
+.acc-switch-banner .switch-icon { font-size: 22px; }
+
+
 @media (max-width: 600px) {
-  .stats-bar  { grid-template-columns: repeat(2,1fr); }
-  .type-grid  { grid-template-columns: repeat(2,1fr); }
-  .row2       { grid-template-columns: 1fr; }
+  .stats-bar    { grid-template-columns: repeat(2,1fr); }
+  .type-grid    { grid-template-columns: repeat(2,1fr); }
+  .row2         { grid-template-columns: 1fr; }
   .settings-row { grid-template-columns: 1fr; }
+  .xu-banner-right { display: none; }
+  .xu-banner-val   { font-size: 28px; }
 }
 </style>
 </head>
@@ -462,12 +629,29 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
     <div class="header-badge">v2.0</div>
   </header>
 
+  <!-- XU HIỆN TẠI BANNER -->
+  <div class="xu-banner">
+    <div class="xu-banner-icon">🪙</div>
+    <div class="xu-banner-info">
+      <div class="xu-banner-label">Xu hiện tại trong tài khoản</div>
+      <div class="xu-banner-val" id="xu-hientai">—</div>
+      <div class="xu-banner-sub" id="xu-accname">Nhấn "Kiểm tra acc" để xem số dư</div>
+    </div>
+    <div class="xu-banner-right">
+      <div class="xu-banner-earned-label">Kiếm được hôm nay</div>
+      <div class="xu-banner-earned" id="xu-earned">+0</div>
+      <button class="xu-banner-btn" onclick="loadInfo()">
+        <span id="refresh-sp"></span>🔄 Làm mới
+      </button>
+    </div>
+  </div>
+
   <!-- STATS -->
   <div class="stats-bar">
     <div class="stat-box s-pink">
-      <div class="stat-icon">🪙</div>
+      <div class="stat-icon">⚡</div>
       <div class="stat-val pink" id="xu-count">0</div>
-      <div class="stat-label">Xu kiếm được</div>
+      <div class="stat-label">Xu kiếm phiên này</div>
     </div>
     <div class="stat-box s-green">
       <div class="stat-icon">✅</div>
@@ -506,6 +690,37 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
       <button class="btn-purple" onclick="setConfig()">⚙️ Đặt TikTok nick</button>
       <button class="btn-ghost" onclick="clearLog()">🗑️ Xóa log</button>
     </div>
+  </div>
+
+  <!-- MULTI ACCOUNT MANAGER -->
+  <div class="card acc-manager">
+    <div class="card-title"><span class="pill"></span> Quản Lý Nhiều Tài Khoản TikTok</div>
+
+    <div class="field">
+      <label class="field-label">🎵 Danh sách TikTok ID (mỗi ID một dòng)</label>
+      <textarea class="acc-input-area" id="acc-list-input"
+        placeholder="Dán ID TikTok vào đây, mỗi ID một dòng&#10;Ví dụ:&#10;123456789&#10;987654321&#10;456789123"></textarea>
+    </div>
+
+    <div class="acc-jobs-row">
+      <label>⚡ Số job mỗi acc:</label>
+      <input type="number" id="jobs-per-acc" value="100" min="1" max="9999"/>
+      <span class="acc-jobs-note">Sau khi làm đủ số job này, tool tự động chuyển sang acc tiếp theo</span>
+    </div>
+
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn-teal" onclick="loadAccounts()">✅ Xác nhận danh sách</button>
+      <button class="btn-ghost" onclick="clearAccounts()">🗑️ Xóa danh sách</button>
+    </div>
+
+    <!-- Switch notification -->
+    <div class="acc-switch-banner" id="acc-switch-banner">
+      <span class="switch-icon">🔄</span>
+      <span id="acc-switch-text">Đang chuyển tài khoản...</span>
+    </div>
+
+    <!-- Account list render -->
+    <div class="acc-list" id="acc-list-render" style="margin-top:14px"></div>
   </div>
 
   <!-- TASK TYPE -->
@@ -605,6 +820,13 @@ let allTasks = [];
 let activeTab = 'all';
 let running = false, stopFlag = false, autoRefetch = true;
 let totalXu = 0, doneCnt = 0, failCnt = 0;
+let accXu = null;
+
+// ── Multi-account state ──
+let tiktokAccounts = []; // [{ id, jobsDone, status:'waiting'|'active'|'done' }]
+let currentAccIdx  = 0;
+let jobsThisAcc    = 0;
+const getJobsPerAcc = () => parseInt($('jobs-per-acc').value) || 100;
 
 const $ = id => document.getElementById(id);
 const getToken = () => $('tds-token').value.trim();
@@ -613,10 +835,7 @@ const getDelay = () => parseInt($('delay-time').value) || 4;
 const sleep    = s  => new Promise(r => setTimeout(r, s*1000));
 
 async function apiFetch(params) {
-  // Thay link này bằng link Cloudflare thực tế của bạn (nhớ có dấu / ở cuối)
-  const workerUrl = 'https://summer-cherry-c43f.phanductruongson1201.workers.dev/'; 
-  
-  const res = await fetch(workerUrl + '?' + new URLSearchParams(params));
+  const res = await fetch(BASE + '?' + new URLSearchParams(params));
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
 }
@@ -639,6 +858,17 @@ function updateStats() {
   $('task-done').textContent = doneCnt;
   $('task-fail').textContent = failCnt;
   $('task-total').textContent = allTasks.length;
+  $('xu-earned').textContent = '+' + totalXu;
+}
+
+function updateXuBanner(xu, name) {
+  const el = $('xu-hientai');
+  el.textContent = Number(xu).toLocaleString('vi-VN');
+  el.classList.remove('bump');
+  void el.offsetWidth; // reflow để trigger animation
+  el.classList.add('bump');
+  if (name) $('xu-accname').textContent = '👤 ' + name;
+  accXu = parseInt(xu);
 }
 function setSdot(s) { $('sdot').className = 'sdot ' + (s||''); }
 
@@ -660,23 +890,136 @@ function toggleRefetch() {
   $('auto-refetch-toggle').classList.toggle('on', autoRefetch);
 }
 
+// ── Multi-account functions ──────────────────────────────
+function loadAccounts() {
+  const raw = $('acc-list-input').value.trim();
+  if (!raw) { log('⚠ Danh sách TikTok ID trống!','warn'); return; }
+  const ids = raw.split('\n').map(s=>s.trim()).filter(Boolean);
+  tiktokAccounts = ids.map(id => ({ id, jobsDone: 0, status: 'waiting' }));
+  currentAccIdx = 0; jobsThisAcc = 0;
+  renderAccList();
+  log(`✅ Đã tải ${ids.length} tài khoản TikTok.`, 'ok');
+  ids.forEach((id, i) => log(`  ${i+1}. ${id}`, 'info'));
+}
+
+function clearAccounts() {
+  tiktokAccounts = []; currentAccIdx = 0; jobsThisAcc = 0;
+  $('acc-list-input').value = '';
+  $('acc-list-render').innerHTML = '';
+  log('🗑️ Đã xóa danh sách tài khoản.','warn');
+}
+
+function renderAccList() {
+  const wrap = $('acc-list-render');
+  if (!tiktokAccounts.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = '';
+  tiktokAccounts.forEach((acc, i) => {
+    const lim = getJobsPerAcc();
+    const pct = Math.min(100, Math.round((acc.jobsDone / lim) * 100));
+    const isActive  = acc.status === 'active';
+    const isDone    = acc.status === 'done';
+    const cls = isActive ? 'acc-active' : isDone ? 'acc-done' : 'acc-waiting';
+    const sbCls = isActive ? 'asb-active' : isDone ? 'asb-done' : 'asb-waiting';
+    const sbTxt = isActive ? '▶ Đang chạy' : isDone ? '✓ Xong' : '⏳ Chờ';
+    const avatarTxt = isDone ? '✓' : (i+1);
+    const el = document.createElement('div');
+    el.className = 'acc-item ' + cls;
+    el.id = 'acc-item-' + i;
+    el.innerHTML = `
+      <div class="acc-avatar">${avatarTxt}</div>
+      <div class="acc-info">
+        <div class="acc-id">${acc.id}</div>
+        <div class="acc-sub">Acc #${i+1} · ${acc.jobsDone}/${lim} job hoàn thành</div>
+      </div>
+      <div class="acc-prog-wrap">
+        <div class="acc-prog-bar-bg">
+          <div class="acc-prog-bar" style="width:${pct}%"></div>
+        </div>
+        <div class="acc-prog-text">${acc.jobsDone}/${lim}</div>
+      </div>
+      <span class="acc-status-badge ${sbCls}">${sbTxt}</span>
+    `;
+    wrap.appendChild(el);
+  });
+}
+
+function updateAccItem(idx) {
+  const acc = tiktokAccounts[idx];
+  if (!acc) return;
+  const lim = getJobsPerAcc();
+  const pct = Math.min(100, Math.round((acc.jobsDone / lim) * 100));
+  const el = $('acc-item-' + idx); if (!el) return;
+  const isActive = acc.status==='active', isDone = acc.status==='done';
+  el.className = 'acc-item ' + (isActive?'acc-active':isDone?'acc-done':'acc-waiting');
+  el.querySelector('.acc-sub').textContent   = `Acc #${idx+1} · ${acc.jobsDone}/${lim} job hoàn thành`;
+  el.querySelector('.acc-prog-bar').style.width = pct + '%';
+  el.querySelector('.acc-prog-text').textContent = `${acc.jobsDone}/${lim}`;
+  const sbEl = el.querySelector('.acc-status-badge');
+  sbEl.className = 'acc-status-badge ' + (isActive?'asb-active':isDone?'asb-done':'asb-waiting');
+  sbEl.textContent = isActive?'▶ Đang chạy':isDone?'✓ Xong':'⏳ Chờ';
+  el.querySelector('.acc-avatar').textContent = isDone ? '✓' : (idx+1);
+}
+
+async function switchToNextAccount() {
+  // Mark current done
+  if (tiktokAccounts[currentAccIdx]) {
+    tiktokAccounts[currentAccIdx].status = 'done';
+    updateAccItem(currentAccIdx);
+  }
+  currentAccIdx++;
+  if (currentAccIdx >= tiktokAccounts.length) {
+    log('🏁 Đã hoàn thành TẤT CẢ tài khoản TikTok!', 'ok');
+    return false;
+  }
+  const next = tiktokAccounts[currentAccIdx];
+  next.status = 'active'; jobsThisAcc = 0;
+  updateAccItem(currentAccIdx);
+
+  // Show switch banner
+  const banner = $('acc-switch-banner');
+  $('acc-switch-text').textContent = `Đang chuyển → Acc #${currentAccIdx+1}: ${next.id}`;
+  banner.classList.add('show');
+  log(`🔄 Chuyển sang acc #${currentAccIdx+1}: ${next.id}`, 'info');
+
+  // Call API to set new TikTok nick
+  const token = getToken();
+  try {
+    const d = await apiFetch({ fields:'run', id: next.id, access_token: token });
+    if (d?.success||d?.status==='ok') {
+      log(`✅ Đã đặt TikTok nick: ${next.id}`, 'ok');
+    } else {
+      log(`⚠ Đặt nick ${next.id} lạ: ${JSON.stringify(d).slice(0,80)}`, 'warn');
+    }
+  } catch(e) {
+    log(`❌ Lỗi đặt nick ${next.id}: ${e.message}`, 'err');
+  }
+
+  await sleep(2);
+  banner.classList.remove('show');
+  return true;
+}
+
 async function loadInfo() {
   const token = getToken();
   if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
   log('Đang kiểm tra tài khoản...','info');
   $('info-sp').innerHTML = '<span class="spin spin-dark" style="border-top-color:#fff"></span>';
+  $('refresh-sp').innerHTML = '<span class="spin" style="width:12px;height:12px;border-width:2px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></span>';
   try {
     const d = await apiFetch({ fields:'me', access_token:token });
     $('info-sp').innerHTML = '';
+    $('refresh-sp').innerHTML = '';
     if (d?.id) {
-      totalXu = parseInt(d.xu) || 0;
+      accXu = parseInt(d.xu) || 0;
+      updateXuBanner(d.xu, d.name || d.id);
       updateStats();
-      log(`✅ Tài khoản: ${d.name||d.id} | Xu: ${d.xu} | TikTok: ${d.idtiktok||'chưa đặt'}`, 'ok');
+      log(`✅ Tài khoản: ${d.name||d.id} | Xu hiện tại: ${Number(d.xu).toLocaleString('vi-VN')} | TikTok: ${d.idtiktok||'chưa đặt'}`, 'ok');
     } else {
       log('❌ Token sai / hết hạn: ' + (d?.error || JSON.stringify(d)), 'err');
     }
   } catch(e) {
     $('info-sp').innerHTML = '';
+    $('refresh-sp').innerHTML = '';
     log('❌ Lỗi kết nối: ' + e.message, 'err');
   }
 }
@@ -796,8 +1139,24 @@ async function runTask(t) {
       setTaskStatus(t._uid, 'done');
       const gained = parseInt(d.xu_receive||t.xu||1);
       totalXu += gained; doneCnt++;
+      if (accXu !== null) { accXu += gained; updateXuBanner(accXu); }
       updateStats(); updateProgress();
       log(`✅ [${TASK_TYPES[t._type].icon} ${TASK_TYPES[t._type].label}] "${(t.title||'').slice(0,30)}" → +${gained} xu`,'ok');
+
+      // ── Multi-account: đếm job và kiểm tra đổi acc ──
+      if (tiktokAccounts.length > 0) {
+        jobsThisAcc++;
+        if (tiktokAccounts[currentAccIdx]) {
+          tiktokAccounts[currentAccIdx].jobsDone++;
+          updateAccItem(currentAccIdx);
+        }
+        const lim = getJobsPerAcc();
+        if (jobsThisAcc >= lim) {
+          log(`📊 Acc #${currentAccIdx+1} đã đủ ${lim} job!`, 'warn');
+          const switched = await switchToNextAccount();
+          if (!switched) { stopFlag = true; } // hết acc thì dừng
+        }
+      }
       return true;
     } else {
       setTaskStatus(t._uid, 'fail');
@@ -825,8 +1184,24 @@ async function startAuto() {
   $('run-btn').style.display='none';
   $('stop-btn').style.display='flex';
   setSdot('loading');
-  const pending = allTasks.filter(t=>t._status==='wait');
-  log(`🚀 Bắt đầu auto – ${pending.length} task đang chờ (delay ${getDelay()}s)`,'info');
+
+  // Kích hoạt acc đầu tiên nếu có danh sách
+  if (tiktokAccounts.length > 0) {
+    currentAccIdx = 0; jobsThisAcc = 0;
+    tiktokAccounts.forEach((a,i) => { a.status = i===0?'active':'waiting'; a.jobsDone = 0; });
+    renderAccList();
+    const firstAcc = tiktokAccounts[0];
+    log(`🎵 Khởi động với acc #1: ${firstAcc.id}`, 'info');
+    try {
+      await apiFetch({ fields:'run', id: firstAcc.id, access_token: token });
+      log(`✅ Đã đặt TikTok nick: ${firstAcc.id}`, 'ok');
+    } catch(e) { log(`⚠ Không đặt được nick: ${e.message}`, 'warn'); }
+    await sleep(1);
+    log(`🚀 Bắt đầu auto – ${allTasks.filter(t=>t._status==='wait').length} task · ${tiktokAccounts.length} acc · ${getJobsPerAcc()} job/acc`, 'info');
+  } else {
+    log(`🚀 Bắt đầu auto – ${allTasks.filter(t=>t._status==='wait').length} task (delay ${getDelay()}s)`, 'info');
+  }
+
   for (let i=0; i<allTasks.length; i++) {
     if (stopFlag) break;
     if (allTasks[i]._status!=='wait') continue;
