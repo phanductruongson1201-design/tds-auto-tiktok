@@ -688,7 +688,18 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
         <span id="info-sp"></span>📋 Kiểm tra acc & xu
       </button>
       <button class="btn-purple" onclick="setConfig()">⚙️ Đặt TikTok nick</button>
+      <button class="btn-ghost" onclick="testProxy()">🔗 Test kết nối</button>
       <button class="btn-ghost" onclick="clearLog()">🗑️ Xóa log</button>
+    </div>
+
+    <!-- Proxy status bar -->
+    <div id="proxy-bar" style="margin-top:12px;display:none;align-items:center;gap:10px;background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px;">
+      <span style="font-size:18px" id="proxy-icon">🔗</span>
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--text2)" id="proxy-label">Đang kiểm tra...</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px" id="proxy-sub"></div>
+      </div>
+      <span id="proxy-badge" style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--bg2);color:var(--muted)">—</span>
     </div>
   </div>
 
@@ -809,6 +820,49 @@ button:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important
 </div>
 <script>
 const BASE = 'https://traodoisub.com/api/';
+
+// ── CORS Proxy list (tự động thử từng proxy nếu lỗi) ──
+const PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://thingproxy.freeboard.io/fetch/${url}`,
+];
+let activeProxy = -1; // -1 = gọi thẳng, 0,1,2 = proxy index
+
+async function apiFetch(params) {
+  const targetUrl = BASE + '?' + new URLSearchParams(params);
+
+  // Thử từ activeProxy hiện tại, nếu lỗi thì leo thang lên proxy tiếp
+  const startIdx = activeProxy;
+  for (let pi = startIdx; pi < PROXIES.length; pi++) {
+    try {
+      let res, data;
+      if (pi === -1) {
+        // Gọi thẳng (không proxy)
+        res  = await fetch(targetUrl);
+        data = await res.json();
+      } else {
+        const proxyUrl = PROXIES[pi](targetUrl);
+        res = await fetch(proxyUrl);
+        const raw = await res.json();
+        // allorigins trả về { contents: "..." }
+        const text = raw?.contents ?? (typeof raw === 'string' ? raw : JSON.stringify(raw));
+        data = typeof text === 'string' ? JSON.parse(text) : raw;
+      }
+      // Thành công — ghi nhớ proxy đang dùng
+      if (pi !== activeProxy) {
+        activeProxy = pi;
+        const label = pi === -1 ? 'trực tiếp' : `proxy #${pi+1}`;
+        log(`🔗 Kết nối qua: ${label}`, 'info');
+      }
+      return data;
+    } catch(e) {
+      // Thử proxy tiếp
+      if (pi === PROXIES.length - 1) throw new Error('Tất cả proxy đều lỗi: ' + e.message);
+    }
+  }
+}
+
 const TASK_TYPES = {
   follow: { label:'Follow',    icon:'👤', field:'tiktok_follow', col:'follow' },
   like:   { label:'Thả Tim',   icon:'❤️', field:'tiktok_like',   col:'like'   },
@@ -999,7 +1053,62 @@ async function switchToNextAccount() {
   return true;
 }
 
-async function loadInfo() {
+async function testProxy() {
+  const token = getToken();
+  if (!token) { log('⚠ Nhập TDS token trước để test!','warn'); return; }
+  const bar = $('proxy-bar');
+  bar.style.display = 'flex';
+  $('proxy-label').textContent = 'Đang thử kết nối trực tiếp...';
+  $('proxy-sub').textContent   = '';
+  $('proxy-icon').textContent  = '⏳';
+  $('proxy-badge').textContent = 'Đang test';
+  $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fef9c3;color:#854d0e';
+
+  const proxyNames = ['Trực tiếp', 'corsproxy.io', 'allorigins.win', 'thingproxy'];
+  activeProxy = -1;
+
+  for (let pi = -1; pi < PROXIES.length; pi++) {
+    const name = proxyNames[pi + 1];
+    $('proxy-label').textContent = `Đang thử: ${name}...`;
+    log(`🔗 Thử kết nối qua ${name}...`, 'info');
+    try {
+      const targetUrl = BASE + '?' + new URLSearchParams({ fields:'me', access_token:token });
+      let data;
+      if (pi === -1) {
+        const res = await fetch(targetUrl);
+        data = await res.json();
+      } else {
+        const res = await fetch(PROXIES[pi](targetUrl));
+        const raw = await res.json();
+        const text = raw?.contents ?? (typeof raw === 'string' ? raw : JSON.stringify(raw));
+        data = typeof text === 'string' ? JSON.parse(text) : raw;
+      }
+      if (data?.id || data?.xu !== undefined) {
+        activeProxy = pi;
+        $('proxy-icon').textContent  = '✅';
+        $('proxy-label').textContent = `Kết nối thành công qua: ${name}`;
+        $('proxy-sub').textContent   = `Token hợp lệ · Acc: ${data.name||data.id} · Xu: ${data.xu}`;
+        $('proxy-badge').textContent = '✓ OK';
+        $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#dcfce7;color:#15803d';
+        log(`✅ Kết nối OK qua ${name}! Xu: ${data.xu}`, 'ok');
+        // auto load info
+        accXu = parseInt(data.xu) || 0;
+        updateXuBanner(data.xu, data.name || data.id);
+        updateStats();
+        return;
+      }
+    } catch(e) {
+      log(`❌ ${name} thất bại: ${e.message}`, 'warn');
+    }
+  }
+  // Tất cả đều lỗi
+  $('proxy-icon').textContent  = '❌';
+  $('proxy-label').textContent = 'Không thể kết nối qua bất kỳ proxy nào';
+  $('proxy-sub').textContent   = 'Hãy cài extension CORS Unblock hoặc dùng Live Server';
+  $('proxy-badge').textContent = '✗ Lỗi';
+  $('proxy-badge').style.cssText = 'font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#dc2626';
+  log('❌ Tất cả proxy đều lỗi. Cài extension CORS Unblock để dùng.', 'err');
+}
   const token = getToken();
   if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
   log('Đang kiểm tra tài khoản...','info');
