@@ -1036,23 +1036,30 @@ async function switchToNextAccount() {
   log(`🔄 Chuyển sang acc #${currentAccIdx+1}: ${next.id}`, 'info');
 
   // Call API to set new TikTok nick
+ async function loadInfo() {
   const token = getToken();
+  if (!token) { log('⚠ Chưa nhập TDS token!','warn'); return; }
+  log('Đang kiểm tra tài khoản...','info');
+  $('info-sp').innerHTML = '<span class="spin spin-dark" style="border-top-color:#fff"></span>';
+  $('refresh-sp').innerHTML = '<span class="spin" style="width:12px;height:12px;border-width:2px;border-color:rgba(255,255,255,0.3);border-top-color:#fff"></span>';
   try {
-    const d = await apiFetch({ fields:'run', id: next.id, access_token: token });
-    if (d?.success||d?.status==='ok') {
-      log(`✅ Đã đặt TikTok nick: ${next.id}`, 'ok');
+    const d = await apiFetch({ fields:'me', access_token:token });
+    $('info-sp').innerHTML = '';
+    $('refresh-sp').innerHTML = '';
+    if (d?.id) {
+      accXu = parseInt(d.xu) || 0;
+      updateXuBanner(d.xu, d.name || d.id);
+      updateStats();
+      log(`✅ Tài khoản: ${d.name||d.id} | Xu hiện tại: ${Number(d.xu).toLocaleString('vi-VN')} | TikTok: ${d.idtiktok||'chưa đặt'}`, 'ok');
     } else {
-      log(`⚠ Đặt nick ${next.id} lạ: ${JSON.stringify(d).slice(0,80)}`, 'warn');
+      log('❌ Token sai / hết hạn: ' + (d?.error || JSON.stringify(d)), 'err');
     }
   } catch(e) {
-    log(`❌ Lỗi đặt nick ${next.id}: ${e.message}`, 'err');
+    $('info-sp').innerHTML = '';
+    $('refresh-sp').innerHTML = '';
+    log('❌ Lỗi kết nối: ' + e.message, 'err');
   }
-
-  await sleep(2);
-  banner.classList.remove('show');
-  return true;
 }
-
 async function testProxy() {
   const token = getToken();
   if (!token) { log('⚠ Nhập TDS token trước để test!','warn'); return; }
